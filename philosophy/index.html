@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="
+    What makes good software?
+">
+        <link rel="icon" type="image/webp" href="/favicon.webp">
+        <link href="https://palouse-sd.github.io/style.css?h=30db5c7f2fce177aa07b" rel="stylesheet">
+        <title>
+    Philosophy
+</title>
+    </head>
+
+    <body>
+        <header>
+            <img src="/favicon.webp" alt="Palouse Software Design Logo">
+            <a href="/">
+                <h1>Palouse Software Design</h1>
+            </a>
+        </header>
+
+        <main>
+        
+    <p><strong>Philosophy</strong></p>
+<p>Many people claim to produce great software, but few are able to actually
+deliver on this.</p>
+<p>Every year, software projects become slower and more bloated. Lessons that were
+learned years ago were forgotten about. Backlash against the misuse of good
+ideas causes the good ideas to be ignored. Managers make bad decisions that
+they suffer maintenance of years down the road. Engineers lack investment in
+the software they make because they believe, often correctly, that they'll find
+a new job before they have to maintain their mistakes.</p>
+<p>Instead of whining on the internet, we at <em>PSD</em> believe in learning from the
+mistakes of others, and designing software that bucks these trends.</p>
+<p><strong>The Modern Web is Good</strong></p>
+<p>While web browsers have gotten more bloated and user-hostile, the web itself is
+a revolutionary tool for making software:</p>
+<ul>
+<li>It is driven by open standards.</li>
+<li>It has multiple competing implementations.</li>
+<li>It allows reaching users without being gate-kept by an app store.</li>
+<li>It allows continuous updating without user intervention.</li>
+<li>It has solid development tools.</li>
+<li>It gives users the freedom to protect their own privacy.</li>
+<li>It gives users the ability to extend applications to fit their needs.</li>
+<li>It gives developers architectural flexibility.</li>
+</ul>
+<p>While there are <em>some</em> applications that the web is ill-suited for, it works
+for most others. The fact that the web has been misused and abused does not
+indict the web itself.</p>
+<p><strong>Single Page Applications are Good</strong></p>
+<p>When the web was invented, web sites were mostly static. It was not long after
+that people demanded dynamic content served from a database, which required
+running server-side scripts to render pages. While this model made web
+applications possible, it required many layers of ugly hacks, and provided a
+terrible user experience when the page was interactive.</p>
+<p>Single Page Applications (SPAs) were a concept invented in the late '00s as a
+response to increased user demand for highly interactive websites. In the
+beginning, the technologies to make this were of poor quality and performance,
+and browsers were not optimized for this style of web application. But it was
+still an upgrade when applications demanded high amounts of interactivity,
+especially when said interactivity does not require making a round-trip to the
+server.</p>
+<p>Over the following decade, better technologies came out for making SPAs that do
+not suck, but business priorities seldom align with this. Rewriting bad
+software that at least works is an unnecessary risk. Performance optimizations
+take a back seat to feature development and bug fixes. The network effect drove
+decisions to optimize for ease of hiring. The web being easy to develop for
+resulted in a lot of lower quality developers shipping software. The result of
+all of this is that the web is littered with terrible code and people whining
+about it.</p>
+<p>In the late '10s, some new architectures and frameworks began to take shape
+that claimed to solve certain issues with this model. Instead of shipping a
+bundle of code to render the page and load content via API call, it would
+render the page server side, ship it to the client, and then also load a code
+bundle which would hydrate the page so that it would be fully interactive.
+Several companies started up to optimize deployment of applications using this
+architecture, and it became a new focus for many web frameworks.</p>
+<p>At PSD, we believe that this focus is misplaced outside of a few niches. It
+solves the problem of search-engine optimization (SEO) in SPAs, and should be
+used only in cases where SEO and dynamic content are required at the same time.
+Use cases for this would be support forums or e-commerce websites. Other
+websites should instead be static websites or full SPAs.</p>
+<p>Our SPA framework of choice is Solid.js.</p>
+<p><strong>Server-Side JavaScript is Bad</strong></p>
+<p>The main issue with this model of server-side rendering + hydration, sometimes
+called &quot;Isomorphism&quot;, is that both the client and the server have to be written
+in the same language. Because JavaScript is the language of the web frontend
+(with very few exceptions), this means that the new model would make JavaScript
+the language of the web backend as well.</p>
+<p>There are a number of concerns with any programming language when it comes to
+backend suitability, but JavaScript exemplifies all of them.</p>
+<ul>
+<li>Weak type safety (TypeScript makes it better, but not perfect)</li>
+<li>Garbage collection, leading to unpredictable resource usage</li>
+<li>Interpreted, thus being open to script injection attacks</li>
+<li>JIT compilation, thus massively increasing the attack surface</li>
+</ul>
+<p>Almost any other language is better suited than JavaScript for running on a
+server.</p>
+<p>At PSD, we believe that Rust is the best language for writing a web backend.
+Other languages either have the issues listed or have less mature web
+ecosystems.</p>
+<p><strong>The Server is More Important than the Client</strong></p>
+<p>In the rare event that a transitional application is required, we will either
+have to compromise on using Solid.js on the frontend or Rust on the backend.
+Both frameworks have a mechanism for running in an isomorphic environment.</p>
+<ul>
+<li>Solid.js has its SolidStart meta-framework</li>
+<li>Rust can compile to wasm to run on the client</li>
+</ul>
+<p>In general, we avoid wasm due to the fact that it is slower than JavaScript
+when it comes to interacting with the browser's DOM. There are multiple
+additions to the wasm standard that need to happen, (such as WasmGC) before it
+can be adopted generally. Wasm also will result in a larger bundle size than
+comparable JavaScript. Thus, we still recommend Solid.js for SPAs.</p>
+<p>However, the costs of JavaScript on the server is significantly worse, both in
+terms of risks and general performance, than the costs of wasm on the client.
+So for an isomorphic application, we recommend using Leptos, a Rust web
+framework that can run on both client and server.</p>
+<p><strong>The Database is More Important than the Server</strong></p>
+<p>If you lose your server, you lose uptime. If you lose your database, you lose
+your business.</p>
+<p>SQL databases have good tooling and are fairly flexible to schema changes as
+the requirements of your application are formalized. They can also scale a
+decent amount. We recommend PostgreSQL.</p>
+<p>It is always possible that your application grows to the point where a SQL
+database no longer performant. This should not happen until you have a large
+enough revenue stream that you can hire a team capable of creating a bespoke
+combination of databases that will fit your application's specific needs.</p>
+<p><strong>Navigating the Software Development Life Cycle</strong></p>
+<p>Currently, most companies claim to be following some variant of the Agile
+methodology. This methodology originated as a response to traditional
+engineering methodologies being too slow and inflexible for software design.
+In practice, most companies would &quot;implement agile&quot; at the request of coaches
+which end up creating a new set of processes that feel slow and inflexible.</p>
+<p>Many startups are able to move faster and disrupt markets because they are
+small enough to have not yet developed the kind of processes that slow down
+development. This is not an indictment of Agile per-se, but rather that most
+companies have incompetent leadership. Larger companies also end up with
+internal politics that prevents problems from being solved in the best way.
+If the company also has to reach compliance milestones, such as SOC II, then
+there will be even more procedure demanded. Agile does not address the issues
+in question.</p>
+<p>Instead, we need a life cycle paradigm that acknowledges the way that companies
+actually exist and the way that software needs to be written. First of all,
+there are two distinct phases of a successful company's life:</p>
+<ol>
+<li>The company is starting up and needs customers to get more revenue</li>
+<li>The company has customers and needs to optimize costs for scalability</li>
+</ol>
+<p>Individual projects within a company can have different stages as well, but an
+already profitable company will have the resources and experience to start
+optimizing costs sooner. In addition, with many of our tool recommendations,
+we try to pick tools that will give a good enough developer experience to not
+impede companies that are starting up, while also avoiding the need for risky
+rewrites when a company matures. It is also important to give yourself enough
+runway to do whatever rewrites need to happen <em>before</em> they start becoming
+issues, and we believe that </p>
+<p>The place where we believe this shift will happen is in your database. SQL
+databases scale reasonably well and give a good foundation for iterative
+development. There are many large companies that have been able to scale to
+large audiences without the need for abandoning it. Even if it continues to
+work well for your business, you will adjust your approach to using it, paying
+closer attention to storage engines, indexes, views and more.</p>
+<p>If you do chose to change databases, or adopt multiple databases, you will
+increase the complexity of your application, and it will be more difficult to
+iterate on new features. That's the tradeoff you have to be prepared to make.</p>
+
+
+        </main>
+    </body>
+</html>
